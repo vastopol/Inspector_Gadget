@@ -1,0 +1,21 @@
+https://www.capstone-engine.org/lang_python.html
+
+could also look at: pefile
+
+capstone:
+
+Import Python module capstone
+Initialize Python class for Capstone with class "Cs"
+Disassemble the binary code with method disasm() of the class Cs class instance
+
+#----------------------------------------
+
+compiler: 32 bit x86
+
+gcc -m32 file.c
+gcc -m32 -w -static file.c
+
+it seems like in an elf file the executable code in in .text section
+
+also if run strip on the binaries the output will be different
+

@@ -1,0 +1,18 @@
+With ROP, it is possible to do far more powerful things than calling a single function.
+In fact, we can use it to run arbitrary code6 rather than just calling functions we have available to us.
+We do this by returning to gadgets, which are short sequences of instructions ending in a ret.
+For example, the following pair of gadgets can be used to write an arbitrary value to an arbitrary location:
+
+pop %ecx
+pop %eax
+ret
+
+mov %eax, (%ecx)
+ret
+
+#----------------------------------------
+
+pop ; ret
+pop ; pop ; ret
+xor eax, eax ; ret
+
