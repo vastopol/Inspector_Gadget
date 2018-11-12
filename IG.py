@@ -57,8 +57,8 @@ def disassemble(a,outf1):
 def rop_find(f,d,outf2):
     outf2.write("ROP Gadgets for %s\n\n" %(f))
     outf2.write("Pop\n\n")
-    find_pop_pop(d,outf2)
     find_pop_ret(d,outf2)
+    find_pop_pop_ret(d,outf2)
     outf2.write("Load/Store\n\n")
     find_mov_ret(d,outf2)
     find_xchg_ret(d,outf2)
@@ -69,28 +69,10 @@ def rop_find(f,d,outf2):
     find_sub_ret(d,outf2)
 #----------------------------------------
 
-# pop pop
-def find_pop_pop(d,outf2):
-    outf2.write("pop ; pop\n\n")
-    prev = d[0]
-    pdex = 0
-    for i in range(1,len(d)):
-        curr = d[i]
-        if prev[1] == "pop" and curr[1] == "pop":
-            outf2.write("\t" + str(prev))
-            outf2.write("\n")
-            outf2.write("\t" + str(curr))
-            outf2.write("\n\n")
-        prev = d[i]
-        pdex += 1
-
-#----------------------------------------
-
 # pop ret
 def find_pop_ret(d,outf2):
     outf2.write("pop ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "pop" and curr[1] == "ret":
@@ -99,15 +81,33 @@ def find_pop_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 
+# pop pop ret
+def find_pop_pop_ret(d,outf2):
+    outf2.write("pop ; pop ; ret\n\n")
+    prev1 = d[0]
+    prev2 = d[1]
+    for i in range(2,len(d)):
+        curr = d[i]
+        if prev1[1] == "pop" and prev2[1] == "pop" and curr[1] == "ret":
+            outf2.write("\t" + str(prev1))
+            outf2.write("\n")
+            outf2.write("\t" + str(prev2))
+            outf2.write("\n")
+            outf2.write("\t" + str(curr))
+            outf2.write("\n\n")
+        prev1 = d[i-1]
+        prev2 = d[i]
+
+#----------------------------------------
+
+# mov ret
 # should find load/store types of gadgets
 def find_mov_ret(d,outf2):
     outf2.write("mov ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "mov" and curr[1] == "ret":
@@ -116,7 +116,6 @@ def find_mov_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 
@@ -124,7 +123,6 @@ def find_mov_ret(d,outf2):
 def find_xchg_ret(d,outf2):
     outf2.write("xchg ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "xchg" and curr[1] == "ret":
@@ -133,15 +131,13 @@ def find_xchg_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 
-# xchg ret
+# lea ret
 def find_lea_ret(d,outf2):
     outf2.write("lea ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "lea" and curr[1] == "ret":
@@ -150,7 +146,6 @@ def find_lea_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 
@@ -158,7 +153,6 @@ def find_lea_ret(d,outf2):
 def find_xor_ret(d,outf2):
     outf2.write("xor ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "xor" and curr[1] == "ret":
@@ -167,7 +161,6 @@ def find_xor_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 
@@ -175,7 +168,6 @@ def find_xor_ret(d,outf2):
 def find_add_ret(d,outf2):
     outf2.write("add ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "add" and curr[1] == "ret":
@@ -184,7 +176,6 @@ def find_add_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 
@@ -192,7 +183,6 @@ def find_add_ret(d,outf2):
 def find_sub_ret(d,outf2):
     outf2.write("sub ; ret\n\n")
     prev = d[0]
-    pdex = 0
     for i in range(1,len(d)):
         curr = d[i]
         if prev[1] == "sub" and curr[1] == "ret":
@@ -201,7 +191,6 @@ def find_sub_ret(d,outf2):
             outf2.write("\t" + str(curr))
             outf2.write("\n\n")
         prev = d[i]
-        pdex += 1
 
 #----------------------------------------
 

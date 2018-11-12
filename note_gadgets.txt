@@ -101,3 +101,29 @@ possible ??:
 imul ; ret
 
 
+#----------------------------------------
+
+Primitive gadgets (1)
+Gadgets mostly evolve around registers, and require registers
+    P1: Gadget set register to another register
+        Ex: xor eax, eax; or eax, ebx; ret → eax = edx
+    P2: Gadget set register to immediate constant (xed concrete value)
+        Ex: mov edi, 0x0; lea eax, [edi]; pop edi; ret → eax = 0
+Hunting for primitive gadgets (P1 & P2) from the set of collected gadget code & formulas
+
+Primitive gadgets (2)
+"Natural" primitive gadgets
+    PN1: Gadget set register to another register
+        Ex: xor eax, eax; add eax, ebx; ret → eax = edx
+    PN2: Gadget set register to immediate constant (xed concrete value)
+        Ex: or ebx, 0xffffffff; xchg eax, ebx; ret → eax = 0xffffffff
+    "Free" register: POP gadget that set register to value poping out of stack bottom (thus can freely get any constant)
+        Ex: # push 0x1234 + pop eax; inc ebx; ret → eax = 0x1234
+"Chained" primitive gadgets
+    PC1: Gadget set register to another register
+        Ex: (lea ecx, [edx]; ret) + (mov eax, edx; ret) → eax = edx
+    PC2: Gadget set register to immediate constant (xed concrete value)
+        Ex: (or ebx, 0xffffffff; ret) + (xchg eax, ebx; ret) → eax = 0xffffffff
+    PC3: Equation-derived gadget: Gadget derived from computed equation, and require constraint to achieve target gadget
+        Ex: (imul ecx, [esi], 0x0; ret) + (add ecx, eax; ret) → ecx = eax
+
