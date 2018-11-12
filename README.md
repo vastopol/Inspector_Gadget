@@ -7,15 +7,15 @@ This looks for specific combinations of instructions called gadgets which will d
 
 written in python3 using capstone disassembly framework.
 
-ROP Resources:
+## usage
+Static mode: will look for predefined patterns, output 2 files
+```
+gcc -m32 file.c
+./IG.py a.out
+```
 
-https://en.wikipedia.org/wiki/Return-oriented_programming
-
-https://www.exploit-db.com/docs/english/28479-return-oriented-programming-(rop-ftw).pdf
-
-https://media.blackhat.com/us-13/US-13-Quynh-OptiROP-Hunting-for-ROP-Gadgets-in-Style-Slides.pdf
-
-https://amslaurea.unibo.it/4682/1/Prati_Marco_tesi.pdf
-
-https://nebelwelt.net/publications/files/16STM.pdf
-
+Dynamic Mode: use interactively to find gadgets
+```
+gcc -m32 file.c
+./IG2.py a.out
+```
