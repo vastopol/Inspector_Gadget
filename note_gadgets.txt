@@ -1,0 +1,103 @@
+With ROP, it is possible to do far more powerful things than calling a single function.
+In fact, we can use it to run arbitrary code rather than just calling functions we have available to us.
+We do this by returning to gadgets, which are short sequences of instructions ending in a ret.
+For example, the following pair of gadgets can be used to write an arbitrary value to an arbitrary location:
+
+pop %ecx
+pop %eax
+ret
+
+mov %eax, (%ecx)
+ret
+
+#----------------------------------------
+
+some to look for:
+
+pop ; ret
+pop ; pop ; ret
+xor eax, eax ; ret
+mov eax, eax ; ret
+mov eax, eax ; mov eax,eax ; ret
+
+#----------------------------------------
+
+gadget catalogs (some types of gadegts)
+
+LOAD    Load value to register
+    mov eax, ebp
+    mov eax, 0xd7
+    mov eax, [edx]
+
+STORE Store to memory
+    mov [ebx], edi
+    mov [ebx], 0x3f
+
+ADJUST Adjust reg/mem
+    add ecx, 9
+    add ecx, esi
+
+CALL Call a function
+    call [esi]
+    call [0x8400726]
+
+SYSCALL Systemcall for *nix
+    int 0x80
+    sysenter
+
+#----------------------------------------
+
+- Loading a constant into register:
+Loading a constant into register will save a value on stack to a register using the POP instruction for later use.
+POP eax; ret;
+What this will do is pop the value on the stack to eax and then return to the address on top of stack.
+
+- Loading from memory:
+Will enable us to load from memory for example the instruction mov ecx,[eax]; ret
+Will move the value located in the address stored in eax, to ecx.
+
+- Storing into memory
+Will store value in register into a memory location.
+Mov [eax],ecx; ret
+Will store the value in ecx to the memory address at eax.
+
+- Arithmetic operations:
+This ranges from addition, subtraction, multiplication, exclusive or, & AND. And will help us allot
+executing a useful gadget as you will see.
+For example:
+add eax,0x0b; ret (will add 0x0b to eax)
+xor edx,edx; ret (will zero out edx)
+
+- System call:
+System call instruction followed by ret will enable us to execute a kernel interrupt (system call) that we
+setup using previous gadgets. The system call gadgets are.
+int 0x80; ret
+call gs:[0x10]; ret
+
+- Gadgets to avoid:
+There are some gadgets are better to avoid;
+gadgets ending with leave followed by ret basically what leave/ret does is pop ebp; ret. This will mess up our stack frame.
+Gadgets ending in pop ebp followed by ret or have the instruction pop ebp. Will also mess up our stack frame.
+
+#----------------------------------------
+
+load:
+    mov ; ret
+    xchg ; ret
+    lea ; ret
+store:
+    mov ; ret
+    xchg ; ret
+adjust:
+    add ; ret
+    sub ; ret
+call:
+    xchg ; call
+syscall:
+    int 0x80
+
+
+possible ??:
+imul ; ret
+
+
