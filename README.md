@@ -7,15 +7,10 @@ This looks for specific combinations of instructions called gadgets which will d
 
 written in python3 using capstone disassembly framework.
 
-## usage
-Static mode: will look for predefined patterns, output 2 files
-```
-gcc -m32 file.c
-./IG.py a.out
-```
+## Usage
 
-Dynamic Mode: use interactively to find gadgets
-```
-gcc -m32 file.c
-./IG2.py a.out
-```
+Mode: use interactively to find gadgets
+
+`./IG.py a.out`
+
+includes some 32 bit rop examples from ctf games
